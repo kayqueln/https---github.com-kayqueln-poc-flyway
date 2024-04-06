@@ -38,10 +38,12 @@ pipeline {
 
         stage('Obtendo secret'){
             steps {
-                echo "${SECRET_NAME}"
                 withAWS(credentials: 'aws-credentials') {
                     script{
                         echo "Conectado com sucesso à AWS."
+                        sh "curl 'https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip' -o 'awscliv2.zip'"
+                        sh "unzip awscliv2.zip"
+                        sh "sudo ./aws/install"
                         def awsSecret = sh "aws secretsmanager get-secret-value --secret-id ${SECRET_NAME} --query SecretString --output text"
                         echo "AWS Secret: ${awsSecret}"
                     }
