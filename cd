@@ -14,7 +14,7 @@ pipeline {
             }
         }
         
-       stage('Leitura do arquivo .env') {
+       stage('Lendo do arquivo .env') {
             steps {
                 script {
                     def properties = [:]
@@ -36,14 +36,13 @@ pipeline {
             }
         }
 
-        stage('Obtenção da secret'){
+        stage('Obtenndo secret'){
             steps {
                 echo "${SECRET_NAME}"
                 withAWS(credentials: 'aws-credentials') {
                     echo "Conectado com sucesso à AWS."
-                    sh 'aws sts get-caller-identity'
-                    // def awsSecret = sh(script: "aws secretsmanager get-secret-value --secret-id ${SECRET_NAME} --query SecretString --output text", returnStdout: true).trim()
-                    // echo "AWS Secret: ${awsSecret}"
+                    def awsSecret = sh(script: "aws secretsmanager get-secret-value --secret-id ${SECRET_NAME} --query SecretString --output text", returnStdout: true).trim()
+                    echo "AWS Secret: ${awsSecret}"
                 }
             }
         }
