@@ -1,4 +1,6 @@
 pipeline {
+    import com.amazonaws.services.secretsmanager.AWSSecretsManagerClientBuilder
+    import com.amazonaws.regions.Regions
     agent any
     
     parameters {
@@ -36,18 +38,18 @@ pipeline {
             }
         }
 
-       stage('Obtendo secret do AWS Secrets Manager') {
+    stage('Obtendo secret do AWS Secrets Manager') {
         steps {
             script {
                 // Defina o nome da sua secret no Secrets Manager
-                def secretName = "${SECRET_NAME}"
+                def secretName = "nome-da-sua-secret"
                 
                 // Use o plugin 'aws-secrets-manager'
                 withAWS(credentials: 'aws-credentials', region: 'us-east-1') {
                     echo "Conectado com a AWS"
                     
-                    // Crie um cliente para acessar o AWS Secrets Manager usando o AmazonSecretsManagerClientBuilder
-                    def secretsManager = com.amazonaws.services.secretsmanager.AmazonSecretsManagerClientBuilder.defaultClient()
+                    // Crie um cliente para acessar o AWS Secrets Manager usando o AWSSecretsManagerClientBuilder
+                    def secretsManager = AWSSecretsManagerClientBuilder.standard().withRegion(Regions.US_EAST_1).build()
                     
                     // Crie uma solicitação para obter o valor da secret
                     def getSecretValueRequest = new com.amazonaws.services.secretsmanager.model.GetSecretValueRequest()
@@ -66,6 +68,7 @@ pipeline {
             }
         }
     }
+
 
 
 
