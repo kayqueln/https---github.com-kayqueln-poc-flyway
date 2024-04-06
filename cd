@@ -9,7 +9,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 script {
-                    checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: params.GIT_REPO_URL]]])
+                    checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: params.GIT_REPO_URL]]])
                 }
             }
         }
@@ -17,14 +17,18 @@ pipeline {
         stage('Leitura do arquivo .env') {
             steps {
                 script {
-                    def properties = readProperties file: '.env'
+                    def properties = [:]
+                    new File('.env').withReader { reader ->
+                        properties = new Properties()
+                        properties.load(reader)
+                    }
                     properties.each { key, value ->
                         echo "Propriedade: ${key}, Valor: ${value}"
                     }
                 }
             }
         }
-        
+
         // Adicione mais estágios conforme necessário para o seu pipeline
     }
     
