@@ -36,24 +36,20 @@ pipeline {
             }
         }
 
-        stage('Obtendo secret') {
+        stage('Obtendo secret'){
             steps {
-                script {
-                    // Baixar e instalar o AWS CLI
-                    sh "curl 'https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip' -o 'awscliv2.zip'"
-                    sh "unzip -o awscliv2.zip"
-                    sh "./aws/install"
-
-                    // Obter a secret da AWS Secrets Manager
-                    def awsSecret = sh "aws secretsmanager get-secret-value --secret-id ${SECRET_NAME} --query SecretString --output text"
-                    echo "AWS Secret: ${awsSecret}"
+                withAWS(credentials: 'aws-credentials') {
+                        def awsSecret = AWS("aws secretsmanager get-secret-value --secret-id ${SECRET_NAME} --query SecretString --output text")
+                        echo "AWS Secret: ${awsSecret}"
+                    }
+                    
                 }
             }
         }
 
-
         //se conectar usando o flyway
-        
+
+
         //executar DLL do repositório
 
     }
