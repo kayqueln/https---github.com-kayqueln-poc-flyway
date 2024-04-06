@@ -2,7 +2,7 @@ pipeline {
     agent any
     
     parameters {
-        string(name: 'GIT_REPO_URL', description: 'URL do repositório GitHub', defaultValue: 'https://github.com/suaconta/seurepositorio.git')
+        string(name: 'GIT_REPO_URL', description: 'URL do repositório GitHub', defaultValue: 'https://github.com/kayqueln/poc-flyway-sql.git')
     }
     
     stages {
@@ -38,11 +38,8 @@ pipeline {
         stage('Obtenção da secret'){
             steps {
                 echo "${SECRET_NAME}"
-                withAWS(credentials: 'aws-credentials-id') {
-                    def awsSecret = sh(script: "aws secretsmanager get-secret-value --secret-id ${SECRET_NAME} --query SecretString --output text", returnStdout: true).trim()
-                    echo "AWS Secret: ${awsSecret}"
 
-                }
+                
             }
         }
 
