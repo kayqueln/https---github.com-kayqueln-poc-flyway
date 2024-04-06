@@ -35,7 +35,17 @@ pipeline {
             }
         }
 
-        // Adicione mais estágios conforme necessário para o seu pipeline
+        stage('Obtenção da secret'){
+            steps {
+                echo "${SECRET_NAME}"
+                withAWS(credentials: 'aws-credentials-id') {
+                    def awsSecret = sh(script: "aws secretsmanager get-secret-value --secret-id ${SECRET_NAME} --query SecretString --output text", returnStdout: true).trim()
+                    echo "AWS Secret: ${awsSecret}"
+
+                }
+            }
+        }
+
     }
     
 }
