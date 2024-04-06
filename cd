@@ -18,12 +18,17 @@ pipeline {
             steps {
                 script {
                     def properties = [:]
-                    new File('.env').withReader { reader ->
-                        properties = new Properties()
-                        properties.load(reader)
-                    }
-                    properties.each { key, value ->
-                        echo "Propriedade: ${key}, Valor: ${value}"
+                    def envFile = '.env'
+                    if (fileExists(envFile)) {
+                        new File(envFile).withReader { reader ->
+                            properties = new Properties()
+                            properties.load(reader)
+                        }
+                        properties.each { key, value ->
+                            echo "Propriedade: ${key}, Valor: ${value}"
+                        }
+                    } else {
+                        error "O arquivo ${envFile} não foi encontrado."
                     }
                 }
             }
