@@ -36,15 +36,26 @@ pipeline {
             }
         }
 
-        stage('Obtendo secret'){
+        stage('Obtendo secret') {
             steps {
+                // Utilize o plugin 'aws-secrets-manager'
                 withAWS(credentials: 'aws-credentials', region: 'us-east-1') {
                     echo "Conectado com a AWS"
-                    secret = getSecret("${SECRET_NAME}")
+                    // Acesso o Secrets Manager
+                    def secretsManager = new com.amazonaws.services.secretsmanager.AWSSecretsManagerClient()
+                    
+                    // Obtenha o valor da Secret pelo nome
+                    def getSecretValueRequest = new com.amazonaws.services.secretsmanager.model.GetSecretValueRequest()
+                    getSecretValueRequest.setSecretId("${SECRET_NAME}")
+                    def getSecretValueResult = secretsManager.getSecretValue(getSecretValueRequest)
+                    
+                    // Armazene o valor em uma String
+                    def secret = getSecretValueResult.getSecretString()
                     echo "Valor do segredo: ${secret}"
                 }
             }
         }
+
 
         //se conectar usando o flyway
 
