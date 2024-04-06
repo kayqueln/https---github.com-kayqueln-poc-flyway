@@ -14,15 +14,16 @@ pipeline {
             }
         }
         
-        stage('Leitura do arquivo .env') {
+       stage('Leitura do arquivo .env') {
             steps {
                 script {
                     def properties = [:]
-                    def envFile = './.env'
+                    def envFile = '.env'
                     if (fileExists(envFile)) {
-                        new File(envFile).withReader { reader ->
-                            properties = new Properties()
-                            properties.load(reader)
+                        def propertiesContent = readFile(envFile)
+                        propertiesContent.readLines().each { line ->
+                            def (key, value) = line.split('=')
+                            properties[key.trim()] = value.trim()
                         }
                         properties.each { key, value ->
                             echo "Propriedade: ${key}, Valor: ${value}"
