@@ -39,7 +39,7 @@ pipeline {
         stage('Obtendo secret'){
             steps {
                 withAWS(credentials: 'aws-credentials') {
-                        def awsSecret = AWS("aws secretsmanager get-secret-value --secret-id ${SECRET_NAME} --query SecretString --output text")
+                        def awsSecret = AWS("--region=us-east-1 secretsmanager get-secret-value --secret-id ${SECRET_NAME} --query SecretString --output text")
                         echo "AWS Secret: ${awsSecret}"
                     }
                     
