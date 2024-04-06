@@ -36,22 +36,33 @@ pipeline {
             }
         }
 
-        stage('Obtendo secret') {
+        stage('Obtendo secret do AWS Secrets Manager') {
             steps {
-                // Utilize o plugin 'aws-secrets-manager'
-                withAWS(credentials: 'aws-credentials', region: 'us-east-1') {
-                    echo "Conectado com a AWS"
-                    // Acesso o Secrets Manager
-                    def secretsManager = new com.amazonaws.services.secretsmanager.AWSSecretsManagerClient()
+                script {
+                    // Defina o nome da sua secret no Secrets Manager
+                    def secretName = "${SECRET_NAME}"
                     
-                    // Obtenha o valor da Secret pelo nome
-                    def getSecretValueRequest = new com.amazonaws.services.secretsmanager.model.GetSecretValueRequest()
-                    getSecretValueRequest.setSecretId("${SECRET_NAME}")
-                    def getSecretValueResult = secretsManager.getSecretValue(getSecretValueRequest)
-                    
-                    // Armazene o valor em uma String
-                    def secret = getSecretValueResult.getSecretString()
-                    echo "Valor do segredo: ${secret}"
+                    // Use o plugin 'aws-secrets-manager'
+                    withAWS(credentials: 'aws-credentials', region: 'us-east-1') {
+                        echo "Conectado com a AWS"
+                        
+                        // Crie um cliente para acessar o AWS Secrets Manager
+                        def secretsManager = new com.amazonaws.services.secretsmanager.AWSSecretsManagerClient()
+                        
+                        // Crie uma solicitação para obter o valor da secret
+                        def getSecretValueRequest = new com.amazonaws.services.secretsmanager.model.GetSecretValueRequest()
+                        getSecretValueRequest.setSecretId(secretName)
+                        
+                        // Obtenha o valor da secret
+                        def getSecretValueResult = secretsManager.getSecretValue(getSecretValueRequest)
+                        def secretValue = getSecretValueResult.getSecretString()
+                        
+                        // Use o valor da secret conforme necessário
+                        echo "Valor da secret: ${secretValue}"
+                        
+                        // Você pode armazenar o valor em uma variável de ambiente para uso posterior
+                        env.SECRET_VALUE = secretValue
+                    }
                 }
             }
         }
