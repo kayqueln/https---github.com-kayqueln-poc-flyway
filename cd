@@ -26,6 +26,7 @@ pipeline {
                             properties[key.trim()] = value.trim()
                         }
                         properties.each { key, value ->
+                            env."${key}" = "${value}"
                             echo "Propriedade: ${key}, Valor: ${value}"
                         }
                     } else {
@@ -42,6 +43,11 @@ pipeline {
                 
             }
         }
+
+        //se conectar usando o flyway
+
+
+        //executar DLL do repositório
 
     }
     
