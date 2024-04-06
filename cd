@@ -40,14 +40,14 @@ pipeline {
             steps {
                 script {
                     // Defina o nome da sua secret no Secrets Manager
-                    def secretName = "nome-da-sua-secret"
+                    def secretName = "${SECRET_NAME}"
                     
                     // Use o plugin 'aws-secrets-manager'
                     withAWS(credentials: 'aws-credentials', region: 'us-east-1') {
                         echo "Conectado com a AWS"
                         
                         // Crie um cliente para acessar o AWS Secrets Manager
-                        def secretsManager = new com.amazonaws.services.secretsmanager.AWSSecretsManagerClientBuilder.standard().withRegion("us-east-1").build()
+                        def secretsManager = com.amazonaws.services.secretsmanager.AWSSecretsManagerClientBuilder.defaultClient()
                         
                         // Crie uma solicitação para obter o valor da secret
                         def getSecretValueRequest = new com.amazonaws.services.secretsmanager.model.GetSecretValueRequest().withSecretId(secretName)
@@ -65,7 +65,8 @@ pipeline {
                 }
             }
         }
-        
+
+
         //se conectar usando o flyway
 
         //executar DLL do repositório
