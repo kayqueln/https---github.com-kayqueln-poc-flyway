@@ -28,9 +28,4 @@ pipeline {
         // Adicione mais estágios conforme necessário para o seu pipeline
     }
     
-    post {
-        always {
-            // Limpeza de recursos ou ações pós-pipeline, se necessário
-        }
-    }
 }
