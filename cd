@@ -40,8 +40,8 @@ pipeline {
             steps {
                 withAWS(credentials: 'aws-credentials', region: 'us-east-1') {
                     echo "Conectado com a AWS"
-                    def secret = getSecret("${SECRET_NAME}")
-                    println "Valor do segredo: ${secret}"
+                    secret = getSecret("${SECRET_NAME}")
+                    echo "Valor do segredo: ${secret}"
                 }
             }
         }
