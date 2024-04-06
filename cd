@@ -38,17 +38,15 @@ pipeline {
 
         stage('Obtendo secret'){
             steps {
-                withAWS(credentials: 'aws-credentials') {
-                        def awsSecret = AWS("--region=us-easy -1 secretsmanager get-secret-value --secret-id ${SECRET_NAME} --query SecretString --output text")
-                        echo "AWS Secret: ${awsSecret}"
-                    
-                    
+                withAWS(credentials: 'aws-credentials', region: 'us-east-1') {
+                    echo "Conectado com a AWS"
+                    def secret = getSecret("${SECRET_NAME}")
+                    println "Valor do segredo: ${secret}"
                 }
             }
         }
 
         //se conectar usando o flyway
-
 
         //executar DLL do repositório
 
