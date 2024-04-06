@@ -40,8 +40,10 @@ pipeline {
             steps {
                 echo "${SECRET_NAME}"
                 withAWS(credentials: 'aws-credentials') {
-                    def awsSecret = sh(script: "aws secretsmanager get-secret-value --secret-id ${SECRET_NAME} --query SecretString --output text", returnStdout: true).trim()
-                    echo "AWS Secret: ${awsSecret}"
+                    echo "Conectado com sucesso à AWS."
+                    sh 'aws sts get-caller-identity'
+                    // def awsSecret = sh(script: "aws secretsmanager get-secret-value --secret-id ${SECRET_NAME} --query SecretString --output text", returnStdout: true).trim()
+                    // echo "AWS Secret: ${awsSecret}"
                 }
             }
         }
