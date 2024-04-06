@@ -1,0 +1,42 @@
+pipeline {
+    agent any
+    
+    parameters {
+        string(name: 'GIT_REPO_URL', description: 'URL do repositório GitHub', defaultValue: 'https://github.com/suaconta/seurepositorio.git')
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: params.GIT_REPO_URL]]])
+                }
+            }
+        }
+        
+        stage('Leitura do arquivo .env') {
+            steps {
+                script {
+                    def properties = readProperties file: '.env'
+                    def secretName = properties.SECRET_NAME
+                    def databaseName = properties.DATABASE_NAME
+                    def databaseType = properties.DATABASE_TYPE
+                    echo "Secret Name: ${secretName}"
+                    echo "Database Name: ${databaseName}"
+                    echo "Database Type: ${databaseType}"
+                    
+                    withAWS(credentials: 'aws-credentials-id') {
+                        def awsSecret = sh(script: "aws secretsmanager get-secret-value --secret-id ${secretName} --query SecretString --output text", returnStdout: true).trim()
+                        echo "AWS Secret: ${awsSecret}"
+                    }
+                }
+            }
+        }
+        
+    }
+    
+    post {
+        always {
+        }
+    }
+}
