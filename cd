@@ -18,25 +18,19 @@ pipeline {
             steps {
                 script {
                     def properties = readProperties file: '.env'
-                    def secretName = properties.SECRET_NAME
-                    def databaseName = properties.DATABASE_NAME
-                    def databaseType = properties.DATABASE_TYPE
-                    echo "Secret Name: ${secretName}"
-                    echo "Database Name: ${databaseName}"
-                    echo "Database Type: ${databaseType}"
-                    
-                    withAWS(credentials: 'aws-credentials-id') {
-                        def awsSecret = sh(script: "aws secretsmanager get-secret-value --secret-id ${secretName} --query SecretString --output text", returnStdout: true).trim()
-                        echo "AWS Secret: ${awsSecret}"
+                    properties.each { key, value ->
+                        echo "Propriedade: ${key}, Valor: ${value}"
                     }
                 }
             }
         }
         
+        // Adicione mais estágios conforme necessário para o seu pipeline
     }
     
     post {
         always {
+            // Limpeza de recursos ou ações pós-pipeline, se necessário
         }
     }
 }
