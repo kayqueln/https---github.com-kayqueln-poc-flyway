@@ -36,36 +36,37 @@ pipeline {
             }
         }
 
-        stage('Obtendo secret do AWS Secrets Manager') {
-            steps {
-                script {
-                    // Defina o nome da sua secret no Secrets Manager
-                    def secretName = "${SECRET_NAME}"
+       stage('Obtendo secret do AWS Secrets Manager') {
+        steps {
+            script {
+                // Defina o nome da sua secret no Secrets Manager
+                def secretName = "${SECRET_NAME}"
+                
+                // Use o plugin 'aws-secrets-manager'
+                withAWS(credentials: 'aws-credentials', region: 'us-east-1') {
+                    echo "Conectado com a AWS"
                     
-                    // Use o plugin 'aws-secrets-manager'
-                    withAWS(credentials: 'aws-credentials', region: 'us-east-1') {
-                        echo "Conectado com a AWS"
-                        
-                        // Crie um cliente para acessar o AWS Secrets Manager
-                        def secretsManager = new com.amazonaws.services.secretsmanager.AWSSecretsManagerClient()
-                        
-                        // Crie uma solicitação para obter o valor da secret
-                        def getSecretValueRequest = new com.amazonaws.services.secretsmanager.model.GetSecretValueRequest()
-                        getSecretValueRequest.setSecretId(secretName)
-                        
-                        // Obtenha o valor da secret
-                        def getSecretValueResult = secretsManager.getSecretValue(getSecretValueRequest)
-                        def secretValue = getSecretValueResult.getSecretString()
-                        
-                        // Use o valor da secret conforme necessário
-                        echo "Valor da secret: ${secretValue}"
-                        
-                        // Você pode armazenar o valor em uma variável de ambiente para uso posterior
-                        env.SECRET_VALUE = secretValue
-                    }
+                    // Crie um cliente para acessar o AWS Secrets Manager usando o AmazonSecretsManagerClientBuilder
+                    def secretsManager = com.amazonaws.services.secretsmanager.AmazonSecretsManagerClientBuilder.defaultClient()
+                    
+                    // Crie uma solicitação para obter o valor da secret
+                    def getSecretValueRequest = new com.amazonaws.services.secretsmanager.model.GetSecretValueRequest()
+                    getSecretValueRequest.setSecretId(secretName)
+                    
+                    // Obtenha o valor da secret
+                    def getSecretValueResult = secretsManager.getSecretValue(getSecretValueRequest)
+                    def secretValue = getSecretValueResult.getSecretString()
+                    
+                    // Use o valor da secret conforme necessário
+                    echo "Valor da secret: ${secretValue}"
+                    
+                    // Você pode armazenar o valor em uma variável de ambiente para uso posterior
+                    env.SECRET_VALUE = secretValue
                 }
             }
         }
+    }
+
 
 
         //se conectar usando o flyway
