@@ -40,14 +40,14 @@ pipeline {
             steps {
                 script {
                     // Defina o nome da sua secret no Secrets Manager
-                    def secretName = "${SECRET_NAME}"
+                    def secretName = "nome-da-sua-secret"
                     
                     // Use o plugin 'aws-secrets-manager'
                     withAWS(credentials: 'aws-credentials', region: 'us-east-1') {
                         echo "Conectado com a AWS"
                         
-                        // Crie um cliente para acessar o AWS Secrets Manager
-                        def secretsManager = com.amazonaws.services.secretsmanager.AWSSecretsManagerClientBuilder.defaultClient()
+                        // Chame a função segura que envolve a chamada ao método defaultClient()
+                        def secretsManager = getSecretsManagerClient()
                         
                         // Crie uma solicitação para obter o valor da secret
                         def getSecretValueRequest = new com.amazonaws.services.secretsmanager.model.GetSecretValueRequest().withSecretId(secretName)
@@ -64,6 +64,13 @@ pipeline {
                     }
                 }
             }
+        }
+
+        @NonCPS
+        def getSecretsManagerClient() {
+            // Crie um cliente para acessar o AWS Secrets Manager
+            def secretsManager = com.amazonaws.services.secretsmanager.AWSSecretsManagerClientBuilder.defaultClient()
+            return secretsManager
         }
 
 
