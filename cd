@@ -36,13 +36,15 @@ pipeline {
             }
         }
 
-        stage('Obtenndo secret'){
+        stage('Obtendo secret'){
             steps {
                 echo "${SECRET_NAME}"
                 withAWS(credentials: 'aws-credentials') {
-                    echo "Conectado com sucesso à AWS."
-                    def awsSecret = sh(script: "aws secretsmanager get-secret-value --secret-id ${SECRET_NAME} --query SecretString --output", returnStdout: true).trim()
-                    echo "AWS Secret: ${awsSecret}"
+                    // echo "Conectado com sucesso à AWS."
+                    // def awsSecret = sh(script: "aws secretsmanager get-secret-value --secret-id ${SECRET_NAME} --query SecretString --output text", returnStdout: true).trim()
+                    // echo "AWS Secret: ${awsSecret}"
+                    echo "${SECRET_NAME}"
+
                 }
             }
         }
