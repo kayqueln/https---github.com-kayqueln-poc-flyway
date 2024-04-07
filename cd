@@ -36,6 +36,35 @@ pipeline {
             }
         }
 
+        stage('Conectar com a AWS e pegar a Secret') {
+            steps {
+                script {
+                    def awsRegion = 'us-east-1' // Defina a região da AWS conforme necessário
+                    def secretName = "${SECRET_NAME}" // Substitua pelo nome da sua secret
+                    
+                    // Configuração da credencial AWS
+                    withCredentials([[
+                        $class: 'AmazonWebServicesCredentialsBinding',
+                        accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                        credentialsId: 'AKIATHXGXAS2Q4XVJPXA',
+                        secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+                    ]]) {
+                        def aws = new AmazonWebServiceUtil(region: awsRegion)
+                        
+                        // Obtendo o valor da secret
+                        def secretValue = aws.getSecretValue(secretName)
+                        
+                        // Usando o valor da secret
+                        // Exemplo: definindo como variável de ambiente
+                        env.SECRET_VALUE = secretValue
+                        
+                        echo "Valor da Secret: ${secretValue}"
+                    }
+                }
+            }
+        }
+
+
         stage('Obtendo secret do AWS Secrets Manager') {
             steps {
                 script {
@@ -44,7 +73,7 @@ pipeline {
                         def secretValue = ""
                         
                         withAWS(credentials: 'aws-credentials', region: 'us-east-1') {
-                            echo "${SECRET_NAME}"
+                            echo "${secretname}"
                             secretValue = getSecret(secretName)
                         }
                         
