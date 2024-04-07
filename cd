@@ -39,7 +39,7 @@ pipeline {
         stage('Obter credenciais do AWS Secret Manager') {
             steps {
                 withAWS(region: 'us-east-1', credentials: 'aws-credentials') {
-                    smGetSecretValue(secretName: "${SECRET_NAME}")
+                    smGetSecretValue(secretName: 'poc-flyway-mysql-secret')
                         .withDecryption(true)
                         .execute()
                         .secretValue
