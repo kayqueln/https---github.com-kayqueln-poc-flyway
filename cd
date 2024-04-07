@@ -39,7 +39,6 @@ pipeline {
         stage('Get Secret from AWS') {
             steps {
                 script {
-                    sh 'yum install -y python3'
                     sh(script: 'pip install --user awscli')
                     def secretValue = sh(script: "aws secretsmanager get-secret-value --secret-id ${SECRET_NAME} --query SecretString --output text", returnStdout: true).trim()
                     
