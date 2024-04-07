@@ -36,49 +36,23 @@ pipeline {
             }
         }
 
-        stage('Obter credenciais do AWS Secret Manager') {
-            steps {
-                script {
-                    // Importa bibliotecas
-                    import com.amazonaws.auth.AWSCredentials
-                    import com.amazonaws.services.secretsmanager.AWSSecretsManager
-                    import com.amazonaws.services.secretsmanager.model.GetSecretValueRequest
-                    import com.amazonaws.services.secretsmanager.model.GetSecretValueResult
-                    
-                    // Define credenciais (substitua pelas suas)
-                    def credentialsId = 'aws-credentials' // ID da credencial AWS configurada no Jenkins
-                    
-                    // Carrega credenciais do Jenkins
-                    AWSCredentials credentials = credentials(id: credentialsId)
-                    
-                    // Define região AWS (substitua pela sua)
-                    def awsRegion = AWSRegion.US_EAST_1 // Região onde o Secret Manager está localizado
-                    
-                    // Cria cliente Secrets Manager
-                    AWSSecretsManager secretsManager = new AWSSecretsManager(credentials, awsRegion)
-                    
-                    // Define nome da Secret
-                    def secretName = "${SECRET_NAME}"
-                    
-                    // Realiza requisição para recuperar o valor
-                    GetSecretValueRequest request = new GetSecretValueRequest().withSecretId(secretName)
-                    GetSecretValueResult result = secretsManager.getSecretValue(request)
-                    
-                    // Verifica se a Secret foi recuperada
-                    if (result != null) {
-                        def secretString = result.secretString
-                        echo "Valor da Secret ${secretName}: ${secretString}"
-                        
-                        // Processar o valor da Secret (opcional)
-                        // ...
-                    } else {
-                        error "Falha ao recuperar a Secret ${secretName}"
+        stages {
+            stage('Obter credenciais do AWS Secret Manager') {
+                steps {
+                    withAWS(region: 'us-east-1', credentials: 'aws-credentials') {
+                        smGetSecretValue(secretName: "${SECRET_NAME}")
+                            .withDecryption(true)
+                            .execute()
+                            .secretValue
+                            .ifPresent { secretValue ->
+                                // Processe o valor da Secret
+                                echo "Valor da Secret: ${secretValue}"
+                            }
                     }
                 }
             }
         }
- 
-       
+    
 
         //se conectar usando o flyway
 
