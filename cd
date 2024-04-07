@@ -40,7 +40,7 @@ pipeline {
             steps {
                 script {
                     sh 'pip3 install --user pipenv'
-                    sh(script: 'pipenv run pip install awscli')
+                    sh 'pipenv run pip install awscli'
                     def secretValue = sh(script: "pipenv run aws secretsmanager get-secret-value --secret-id ${SECRET_NAME} --query SecretString --output text", returnStdout: true).trim()
                     
                     // Utilize o valor da secret conforme necessário
