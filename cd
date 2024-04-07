@@ -40,16 +40,22 @@ pipeline {
             steps {
                 script {
                     try {
+                        def secretName = "${SECRET_VALUE}"
+                        def secretValue = ""
+                        
                         withAWS(credentials: 'aws-credentials', region: 'us-east-1') {
-                            echo "Conectado com a AWS"
+                            secretValue = awsUtil.getSecret(secretName)
                         }
+                        
+                        echo "Valor da secret ${secretName}: ${secretValue}"
                     } catch (Exception e) {
-                        echo "Erro ao conectar com a AWS: ${e.message}"
+                        echo "Erro ao recuperar a secret: ${e.message}"
                         currentBuild.result = 'FAILURE'
                     }
                 }
             }
         }
+
 
 
 
