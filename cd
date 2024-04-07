@@ -39,7 +39,7 @@ pipeline {
         stage('Get Secret from AWS') {
             steps {
                 script {
-                    apt 'install python3'
+                    sh 'apt-get update && apt-get install -y python3'
                     sh(script: 'pip install --user awscli')
                     def secretValue = sh(script: "aws secretsmanager get-secret-value --secret-id ${SECRET_NAME} --query SecretString --output text", returnStdout: true).trim()
                     
