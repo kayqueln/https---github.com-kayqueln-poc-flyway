@@ -40,7 +40,7 @@ pipeline {
             steps {
                 script {
                     // Importando a biblioteca AWS
-                    @Library(['aws']) _
+                    def aws = library(identifier: 'aws-lib@master')
 
                     // Configuração das credenciais da AWS
                     withAWS(region: 'us-east-1', credentials: 'aws-credentials') {
