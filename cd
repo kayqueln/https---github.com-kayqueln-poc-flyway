@@ -44,7 +44,8 @@ pipeline {
                         def secretValue = ""
                         
                         withAWS(credentials: 'aws-credentials', region: 'us-east-1') {
-                            secretValue = awsUtil.getSecret(secretName)
+                            echo "${SECRET_NAME}"
+                            secretValue = getSecret(secretName)
                         }
                         
                         echo "Valor da secret ${secretName}: ${secretValue}"
