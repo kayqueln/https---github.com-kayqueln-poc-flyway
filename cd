@@ -54,6 +54,7 @@ pipeline {
                     }
                 }
             }
+        }
 
         //se conectar usando o flyway
 
