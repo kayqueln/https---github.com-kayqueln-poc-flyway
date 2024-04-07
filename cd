@@ -41,37 +41,37 @@ pipeline {
                 script {
                     // Defina o nome da sua secret no Secrets Manager
                     def secretName = "nome-da-sua-secret"
-                    
-                    // Use o plugin 'aws-secrets-manager'
-                    withAWS(credentials: 'aws-credentials', region: 'us-east-1') {
-                        echo "Conectado com a AWS"
-                        
-                        // Chame a função segura que envolve a chamada ao método defaultClient()
-                        def secretsManager = getSecretsManagerClient()
-                        
-                        // Crie uma solicitação para obter o valor da secret
-                        def getSecretValueRequest = new com.amazonaws.services.secretsmanager.model.GetSecretValueRequest().withSecretId(secretName)
-                        
-                        // Obtenha o valor da secret
-                        def getSecretValueResult = secretsManager.getSecretValue(getSecretValueRequest)
-                        def secretValue = getSecretValueResult.getSecretString()
-                        
-                        // Use o valor da secret conforme necessário
-                        echo "Valor da secret: ${secretValue}"
-                        
-                        // Você pode armazenar o valor em uma variável de ambiente para uso posterior
-                        env.SECRET_VALUE = secretValue
+
+                    try {
+                        // Use o plugin 'aws-secrets-manager'
+                        withAWS(credentials: 'aws-credentials', region: 'us-east-1') {
+                            echo "Conectado com a AWS"
+
+                            // Crie um cliente para acessar o AWS Secrets Manager
+                            def secretsManager = new com.amazonaws.services.secretsmanager.AWSSecretsManagerClientBuilder.standard().withRegion("us-east-1").build()
+
+                            // Crie uma solicitação para obter o valor da secret
+                            def getSecretValueRequest = new com.amazonaws.services.secretsmanager.model.GetSecretValueRequest().withSecretId(secretName)
+
+                            // Obtenha o valor da secret
+                            def getSecretValueResult = secretsManager.getSecretValue(getSecretValueRequest)
+                            def secretValue = getSecretValueResult.getSecretString()
+
+                            // Use o valor da secret conforme necessário
+                            echo "Valor da secret: ${secretValue}"
+
+                            // Você pode armazenar o valor em uma variável de ambiente para uso posterior
+                            env.SECRET_VALUE = secretValue
+                        }
+                    } catch (Exception e) {
+                        echo "Erro ao conectar com a AWS: ${e.message}"
+                        // Se a conexão falhar, você pode definir o build como falha ou realizar outras ações necessárias
+                        currentBuild.result = 'FAILURE'
                     }
                 }
             }
         }
 
-        @NonCPS
-        def getSecretsManagerClient() {
-            // Crie um cliente para acessar o AWS Secrets Manager
-            def secretsManager = com.amazonaws.services.secretsmanager.AWSSecretsManagerClientBuilder.defaultClient()
-            return secretsManager
-        }
 
 
         //se conectar usando o flyway
