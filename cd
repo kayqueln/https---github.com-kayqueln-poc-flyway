@@ -39,21 +39,14 @@ pipeline {
         stage('Get Secret from AWS') {
             steps {
                 script {
-                    // Importando a biblioteca AWS
-                    def aws = library(identifier: 'aws-lib@master')
-
-                    // Configuração das credenciais da AWS
-                    withAWS(region: 'us-east-1', credentials: 'aws-credentials') {
-                        // Obtendo o valor da secret do Secret Manager
-                        def secretValue = sh(script: "ws secretsmanager get-secret-value --secret-id ${SECRET_NAME} --query SecretString --output text", returnStdout: true).trim()
-                        
-                        // Utilize o valor da secret conforme necessário
-                        echo "O valor da secret é: ${secretValue}"
-                    }
+                    // Obtendo o valor da secret do Secret Manager
+                    def secretValue = sh(script: 'aws secretsmanager get-secret-value --secret-id your-secret-id --query SecretString --output text', returnStdout: true).trim()
+                    
+                    // Utilize o valor da secret conforme necessário
+                    echo "O valor da secret é: ${secretValue}"
                 }
             }
         }
-        
     
 
         //se conectar usando o flyway
