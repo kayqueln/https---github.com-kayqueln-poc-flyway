@@ -39,9 +39,8 @@ pipeline {
         stage('Get Secret from AWS') {
             steps {
                 script {
-                    sh 'pip3 install --user pipenv'
-                    sh 'pipenv run pip install awscli'
-                    def secretValue = sh(script: "pipenv run aws secretsmanager get-secret-value --secret-id ${SECRET_NAME} --query SecretString --output text", returnStdout: true).trim()
+                    sh(script: 'pip3 install --user awscli')
+                    def secretValue = sh(script: "aws secretsmanager get-secret-value --secret-id ${SECRET_NAME} --query SecretString --output text", returnStdout: true).trim()
                     
                     // Utilize o valor da secret conforme necessário
                     echo "O valor da secret é: ${secretValue}"
