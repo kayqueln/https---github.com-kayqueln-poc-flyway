@@ -36,17 +36,20 @@ pipeline {
             }
         }
 
-        stage('Obter credenciais do AWS Secret Manager') {
+        stage('Get Secret from AWS') {
             steps {
-                withAWS(region: 'us-east-1', credentials: 'aws-credentials') {
-                    smGetSecretValue(secretName: 'poc-flyway-mysql-secret')
-                        .withDecryption(true)
-                        .execute()
-                        .secretValue
-                        .ifPresent { secretValue ->
-                            // Processe o valor da Secret
-                            echo "Valor da Secret: ${secretValue}"
-                        }
+                script {
+                    // Importando a biblioteca AWS
+                    @Library(['aws']) _
+
+                    // Configuração das credenciais da AWS
+                    withAWS(region: 'us-east-1', credentials: 'aws-credentials') {
+                        // Obtendo o valor da secret do Secret Manager
+                        def secretValue = sh(script: "ws secretsmanager get-secret-value --secret-id ${SECRET_NAME} --query SecretString --output text", returnStdout: true).trim()
+                        
+                        // Utilize o valor da secret conforme necessário
+                        echo "O valor da secret é: ${secretValue}"
+                    }
                 }
             }
         }
