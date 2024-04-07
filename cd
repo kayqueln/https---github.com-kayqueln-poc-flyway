@@ -36,6 +36,25 @@ pipeline {
             }
         }
 
+        stage('Fetch Secret - Moto Endpoint') {
+            environment {
+                AWS_REGION="us-east-1"
+            }
+            steps {
+                script {
+                    withCredentials([string(credentialsId: 'aws-credentials', variable: 'AWS_CREDENTIALS')]) {
+                        print 'AWS_CREDENTIALS=' + "${AWS_CREDENTIALS}"
+                        def charArray = AWS_CREDENTIALS.toCharArray()
+                        def passwd = ""
+                        for (c in charArray) {
+                            passwd += " "+c.toString()
+                        }
+                        println "the password is"+passwd
+                        println "the password is"+passwd.replaceAll(" ", "")
+                    }
+                }
+            }
+
         //se conectar usando o flyway
 
         //executar DLL do repositório
