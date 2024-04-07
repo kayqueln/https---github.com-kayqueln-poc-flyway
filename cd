@@ -39,8 +39,9 @@ pipeline {
         stage('Retrieve credential from secrets manager') {
             steps {
                 withAWS(credentials: 'aws-credentials', region: 'us-east-1') {
-                    sh "/usr/local/bin/aws secretsmanager get-secret-value --secret-id poc-flyway-mysql-secret"
+                    def secretvalue = script(sh "/usr/local/bin/aws secretsmanager get-secret-value --secret-id poc-flyway-mysql-secret --output text")
 
+                    echo "Valor da secret: ${secretvalue}"
                 }
             }
         }
