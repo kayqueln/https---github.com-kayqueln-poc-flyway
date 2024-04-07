@@ -36,44 +36,6 @@ pipeline {
             }
         }
 
-        @Library(['aws-sdk']) _
-
-import com.amazonaws.regions.Regions
-import com.amazonaws.services.secretsmanager.AWSSecretsManagerClientBuilder
-
-        stage('Conectar com a AWS e pegar a Secret') {
-            steps {
-                script {
-                    def awsRegion = 'us-east-1' // Defina a região da AWS conforme necessário
-                    def secretName = "${SECRET_NAME}" // Substitua pelo nome da sua secret
-                    
-                    // Usando credenciais armazenadas no Jenkins
-                    withCredentials([[
-                        $class: 'AmazonWebServicesCredentialsBinding',
-                        accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                        credentialsId: 'aws-credentials', // Substitua pelo ID da sua credencial AWS no Jenkins
-                        secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
-                    ]]) {
-                        // Construindo cliente para AWS Secret Manager
-                        def secretsManagerClient = AWSSecretsManagerClientBuilder.standard()
-                            .withRegion(awsRegion)
-                            .build()
-
-                        // Obtendo o valor da secret
-                        def secretValueResult = secretsManagerClient.getSecretValue(new com.amazonaws.services.secretsmanager.model.GetSecretValueRequest()
-                            .withSecretId(secretName))
-                        def secretValue = secretValueResult.getSecretString()
-
-                        // Usando o valor da secret
-                        // Exemplo: definindo como variável de ambiente
-                        env.SECRET_VALUE = secretValue
-
-                        echo "Valor da Secret: ${secretValue}"
-                    }
-                }
-            }
-        }
-
         //se conectar usando o flyway
 
         //executar DLL do repositório
