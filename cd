@@ -39,7 +39,7 @@ pipeline {
         stage('Retrieve credential from secrets manager') {
             steps {
                 withAWS(credentials: 'aws-credentials', region: 'us-east-1') {
-                    sh "/usr/local/bin/aws aws --version"
+                    sh "aws --version"
 
                 }
             }
