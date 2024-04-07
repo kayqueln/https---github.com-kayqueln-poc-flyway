@@ -36,22 +36,21 @@ pipeline {
             }
         }
 
-        stages {
-            stage('Obter credenciais do AWS Secret Manager') {
-                steps {
-                    withAWS(region: 'us-east-1', credentials: 'aws-credentials') {
-                        smGetSecretValue(secretName: "${SECRET_NAME}")
-                            .withDecryption(true)
-                            .execute()
-                            .secretValue
-                            .ifPresent { secretValue ->
-                                // Processe o valor da Secret
-                                echo "Valor da Secret: ${secretValue}"
-                            }
-                    }
+        stage('Obter credenciais do AWS Secret Manager') {
+            steps {
+                withAWS(region: 'us-east-1', credentials: 'aws-credentials') {
+                    smGetSecretValue(secretName: "${SECRET_NAME}")
+                        .withDecryption(true)
+                        .execute()
+                        .secretValue
+                        .ifPresent { secretValue ->
+                            // Processe o valor da Secret
+                            echo "Valor da Secret: ${secretValue}"
+                        }
                 }
             }
         }
+        
     
 
         //se conectar usando o flyway
