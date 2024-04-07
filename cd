@@ -35,7 +35,7 @@ pipeline {
                 }
             }
         }
-
+ 
         stage('Fetch Secret - Moto Endpoint') {
             environment {
                 AWS_REGION="us-east-1"
