@@ -39,6 +39,7 @@ pipeline {
         stage('Retrieve credential from secrets manager') {
             steps {
                 withAWS(credentials: 'aws-credentials', region: 'us-east-1') {
+                    sh "pip3 install awscli"
                     sh "aws --version"
 
                 }
