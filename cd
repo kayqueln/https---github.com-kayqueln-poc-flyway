@@ -36,6 +36,11 @@ pipeline {
             }
         }
 
+        @Library(['aws-sdk']) _
+
+import com.amazonaws.regions.Regions
+import com.amazonaws.services.secretsmanager.AWSSecretsManagerClientBuilder
+
         stage('Conectar com a AWS e pegar a Secret') {
             steps {
                 script {
