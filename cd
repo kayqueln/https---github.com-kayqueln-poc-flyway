@@ -40,14 +40,8 @@ pipeline {
             steps {
                 script {
 
-                    // Instalar o AWS CLI com pip3
-                    sh(script: 'pip3 install --user awscli')
-
-                    // Encontrar o caminho da instalação do AWS CLI
-                    def awsCliPath = sh(script: 'which aws', returnStdout: true).trim()
-
-                    // Imprimir o caminho da instalação
-                    echo "O AWS CLI foi instalado em: ${awsCliPath}"
+                    sh(script: 'pip3 install --user pipenv')
+                    sh(script: 'pipenv run pip install awscli')
 
                     // def secretValue = sh(script: "aws secretsmanager get-secret-value --secret-id ${SECRET_NAME} --query SecretString --output text", returnStdout: true).trim()
                     
