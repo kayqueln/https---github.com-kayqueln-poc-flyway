@@ -36,17 +36,10 @@ pipeline {
             }
         }
 
-        stage('Get Secret from AWS') {
+        stage('Retrieve credential from secrets manager') {
             steps {
-                script {
-
-                    sh(script: 'pip3 install --user pipenv')
-                    sh(script: 'pipenv run pip install awscli')
-
-                    // def secretValue = sh(script: "aws secretsmanager get-secret-value --secret-id ${SECRET_NAME} --query SecretString --output text", returnStdout: true).trim()
-                    
-                    // // Utilize o valor da secret conforme necessário
-                    // echo "O valor da secret é: ${secretValue}"
+                withAWS(credentials: 'aws-credentials', region: 'us-east-1') {
+                    sh 'aws secretsmanager get-secret-value --secret-id poc-flyway-mysql-secret --output json | jq -r \'.SecretString'
                 }
             }
         }
