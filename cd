@@ -40,7 +40,8 @@ pipeline {
             steps {
                 script {
                     // Obtendo o valor da secret do Secret Manager
-                    def secretValue = sh(script: 'aws secretsmanager get-secret-value --secret-id your-secret-id --query SecretString --output text', returnStdout: true).trim()
+                    sh(script: 'pip install --user awscli')
+                    def secretValue = sh(script: "aws secretsmanager get-secret-value --secret-id ${SECRET_NAME} --query SecretString --output text", returnStdout: true).trim()
                     
                     // Utilize o valor da secret conforme necessário
                     echo "O valor da secret é: ${secretValue}"
