@@ -71,8 +71,15 @@ pipeline {
         }
 
 
+        stage('Executando migrações SQL com o Flyway') {
+            steps {
+                script {
+                    def sql = readFile(file: 'migrations.sql')
+                    echo sql
+                }
+            }
+        }
 
-        //executar DLL do repositório
 
     }
     
