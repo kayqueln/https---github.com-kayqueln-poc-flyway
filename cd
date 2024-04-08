@@ -41,9 +41,14 @@ pipeline {
                 withAWS(credentials: 'aws-credentials', region: 'us-east-1') {
                     script{
                         def secretvalue = sh(script: "/usr/local/bin/aws secretsmanager get-secret-value --secret-id ${SECRET_NAME} --query SecretString --output json")
-                        def secretMap = readJSON text: secretvalue
-                        def password = secretMap.password
-                        echo "Valor da senha: ${password}"
+
+                        def jsonSlurper = new JsonSlurper()
+                        def secretObject = jsonSlurper.parseText(secretJson)
+
+                        // Agora você pode acessar as propriedades do JSON como objetos Groovy
+                        def password = secretObject.password
+
+                        echo "Senha: ${password}"
                     }
                 }
             }
