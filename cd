@@ -57,10 +57,17 @@ pipeline {
         stage('Estabelecendo conexão com o Flyway') {
             steps {
                 script {
-                    sh "apt install flyway"
+                    def commandOutput = sh(script: "/usr/local/bin/flyway -url=jdbc:${secretObject.engine}://${secretObject.host}:${secretObject.port}/${secretObject.db_name} -user=${secretObject.username} -password=${secretObject.password} info", returnStatus: true)
+                    
+                    if (commandOutput == 0) {
+                        echo 'Conexão com o Flyway estabelecida com sucesso.'
+                    } else {
+                        error 'Falha ao estabelecer conexão com o Flyway.'
+                    }
                 }
             }
         }
+
 
 
         //executar DLL do repositório
