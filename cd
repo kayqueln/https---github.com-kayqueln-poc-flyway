@@ -45,11 +45,11 @@ pipeline {
                         // Use JsonSlurper para analisar a string JSON
                         def jsonSlurper = new JsonSlurper()
                         def secretObject = jsonSlurper.parseText(secretValue)
-                        
+
                         def password = secretObject.password
 
                         echo "Senha: ${password}"
-            }
+            
                     }
                 }
             }
