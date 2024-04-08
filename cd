@@ -43,12 +43,9 @@ pipeline {
                         def secretValue = sh(script: "/usr/local/bin/aws secretsmanager get-secret-value --secret-id ${SECRET_NAME} --query SecretString --output json")
 
                         // Use JsonSlurper para analisar a string JSON
-                        def jsonSlurper = new JsonSlurper()
-                        def secretObject = jsonSlurper.parseText(secretValue)
+                        def secretObject = readJSON(text: "${secretValue}")
 
-                        def password = secretObject.password
-
-                        echo "Senha: ${password}"
+                        echo "Senha: ${secretObject.password}"
             
                     }
                 }
