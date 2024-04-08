@@ -57,7 +57,7 @@ pipeline {
         stage('Estabelecendo conexão com o Flyway') {
             steps {
                 script {
-                    sh "sudo apt install flyway"
+                    sh "apt install flyway"
                 }
             }
         }
