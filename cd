@@ -64,8 +64,8 @@ pipeline {
                     sh "mkdir -p sql"
                     sh "cp migrations.sql sql/"
 
-                    def commandOutput = sh(script: "/usr/local/bin/flyway -url=jdbc:${secretObject.engine}://${secretObject.host}:${secretObject.port}/${secretObject.db_name} -user=${secretObject.username} -password=${secretObject.password} migrate", returnStatus: true)
-                    
+                    def commandOutput = sh(script: "/usr/local/bin/flyway -url=jdbc:${secretObject.engine}://${secretObject.host}:${secretObject.port}/${secretObject.db_name} -user=${secretObject.username} -password=${secretObject.password} -locations=filesystem:sql migrate", returnStatus: true)
+
                     if (commandOutput == 0) {
                         echo 'Migrações SQL executadas com sucesso.'
                     } else {
