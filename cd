@@ -45,7 +45,7 @@ pipeline {
                         def secretObject = readJSON(text: "${secretValue}")
 
                         // Agora você pode acessar as propriedades do JSON como objetos Groovy
-                        def password = secretObject.password
+                        def password = secretObject.engine
 
                         echo "Senha: ${password}"
                     }
