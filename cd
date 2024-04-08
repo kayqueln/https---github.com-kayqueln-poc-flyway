@@ -57,23 +57,9 @@ pipeline {
         stage('Estabelecendo conexão com o Flyway') {
             steps {
                 script {
-                    sh 'wget -qO- https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/7.0.0/flyway-commandline-7.0.0-linux-x64.tar.gz | tar xvz -C /tmp'
-                    tool name: 'Flyway', type: 'FlywayInstallation', properties: [
-                        [$class: 'ToolProperty', key: 'toolLocation', value: '/tmp/flyway-7.0.0']
-                    ]
-
-                    def flywayHome = tool 'Flyway' // Certifique-se de ter o Flyway configurado nas Ferramentas Globais do Jenkins
-                    def dbUrl = "jdbc:${secretObject.engine}://${secretObject.host}:${secretObject.port}/${secretObject.db_name}" // Defina suas variáveis de ambiente para conexão com o banco de dados
-                    def dbUser = "${secretObject.username}"
-                    def dbPassword = "${secretObject.password}"
-                    
-                    try {
-                        // Tentar estabelecer a conexão com o banco de dados
-                        sh "java -cp \"/path/to/your/jdbc/driver.jar\" YourConnectionCheckClass ${dbUrl} ${dbUser} ${dbPassword}"
-                        echo 'Conexão com o banco de dados bem-sucedida!'
-                    } catch (Exception e) {
-                        error 'Falha ao conectar ao banco de dados!'
-                    }
+                    sh "pip3 install flyway"
+                    def path = sh(script: 'which flyway', returnStdout: true)
+                    echo "${path}"
                 }
             }
         }
