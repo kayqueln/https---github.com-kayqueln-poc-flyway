@@ -43,7 +43,7 @@ pipeline {
                 withAWS(credentials: 'aws-credentials', region: 'us-east-1') {
                     script{
                         secretvalue = sh(script: "/usr/local/bin/aws secretsmanager get-secret-value --secret-id ${SECRET_NAME} --query SecretString --output text", returnStdout: true).trim()
-                        echo "Valor da secret: ${secretvalue}"
+                        echo "Valor da secret: ${secretvalue.password}"
                     }
                 }
             }
