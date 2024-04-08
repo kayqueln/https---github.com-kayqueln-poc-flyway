@@ -42,13 +42,9 @@ pipeline {
                     script{
                         def secretValue = sh(script: "/usr/local/bin/aws secretsmanager get-secret-value --secret-id ${SECRET_NAME} --query SecretString --output json")
                 
-                        // Use a função readJSON para analisar a string JSON
                         def secretObject = readJSON(text: secretValue)
 
-                        // Acessa a propriedade password diretamente
-                        def password = secretObject.password
-
-                        echo "Senha: ${password}"
+                        echo "Senha: ${secretObject}"
             
                     }
                 }
