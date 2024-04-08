@@ -45,7 +45,7 @@ pipeline {
                         // Use JsonSlurper para analisar a string JSON
                         def secretObject = readJSON(text: "${secretValue}")
 
-                        echo "Senha: ${secretObject}"
+                        echo "Senha: ${secretObject.SecretString}"
             
                     }
                 }
