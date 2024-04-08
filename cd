@@ -25,9 +25,15 @@ pipeline {
                             def (key, value) = line.split('=')
                             properties[key.trim()] = value.trim()
                         }
+                        
+                        if (!properties.containsKey('SECRET_NAME')) {
+                            error 'A propriedade SECRET_NAME não foi definida no arquivo .env.'
+                        } else {
+                            echo "Propriedade: SECRET_NAME, Valor: ${properties['SECRET_NAME']}"
+                        }
+
                         properties.each { key, value ->
                             env."${key}" = "${value}"
-                            echo "Propriedade: ${key}, Valor: ${value}"
                         }
                     } else {
                         error "O arquivo ${envFile} não foi encontrado."
@@ -41,10 +47,7 @@ pipeline {
                 withAWS(credentials: 'aws-credentials', region: 'us-east-1') {
                     script{
                         def secretValue = sh(script: "/usr/local/bin/aws secretsmanager get-secret-value --secret-id ${SECRET_NAME} --query SecretString --output text", returnStdout: true)
-                        def secretObject = readJSON(text: "${secretValue}")
-                        
-                        echo "Senha: ${secretObject.password}"
-            
+                        def secretObject = readJSON(text: "${secretValue}")                        
                     }
                 }
             }
