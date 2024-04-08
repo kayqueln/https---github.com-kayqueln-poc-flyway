@@ -42,7 +42,7 @@ pipeline {
                     script{
                         def secretValue = sh(script: "/usr/local/bin/aws secretsmanager get-secret-value --secret-id ${SECRET_NAME} --query SecretString --output json")
                 
-                        echo "Senha: ${secretValue.SecretString}"
+                        echo "Senha: ${secretValue.password}"
             
                     }
                 }
