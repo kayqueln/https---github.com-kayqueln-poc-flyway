@@ -74,11 +74,21 @@ pipeline {
         stage('Executando migrações SQL com o Flyway') {
             steps {
                 script {
-                    def sql = readFile(file: 'migrations.sql')
-                    echo sql
+                    def migrations = readFile(file: 'migrations.sql')
+                    echo "${migrations}"
+                    
+                    def commandOutput = sh(script: "/usr/local/bin/flyway -url=jdbc:${secretObject.engine}://${secretObject.host}:${secretObject.port}/${secretObject.db_name} -user=${secretObject.username} -password=${secretObject.password} migrate", returnStatus: true)
+                    
+                    if (commandOutput == 0) {
+                        echo 'Migrações SQL executadas com sucesso.'
+                    } else {
+                        error 'Falha ao executar migrações SQL.'
+                    }
                 }
             }
         }
+
+
 
 
     }
