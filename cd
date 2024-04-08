@@ -61,6 +61,7 @@ pipeline {
                     def migrations = readFile(file: 'migrations.sql')
                     echo "${migrations}"
 
+                    sh "mkdir sql"
                     sh "cp migrations.sql sql/"
 
                     def commandOutput = sh(script: "/usr/local/bin/flyway -url=jdbc:${secretObject.engine}://${secretObject.host}:${secretObject.port}/${secretObject.db_name} -user=${secretObject.username} -password=${secretObject.password} -locations=filesystem:sql/migrations.sql migrate", returnStatus: true)
