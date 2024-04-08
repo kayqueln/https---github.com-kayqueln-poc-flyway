@@ -40,9 +40,8 @@ pipeline {
             steps {
                 withAWS(credentials: 'aws-credentials', region: 'us-east-1') {
                     script{
-                        def secretvalue = sh(script: "/usr/local/bin/aws secretsmanager get-secret-value --secret-id ${SECRET_NAME} --query SecretString --output text", returnStdout: true).trim()
-                         def secretMap = readJSON text: secretvalue
-                        echo "Valor da secret: ${secretMap.password}"
+                        def secretValue = sh(script: "/usr/local/bin/aws secretsmanager get-secret-value --secret-id ${SECRET_NAME} --query SecretString --output json")
+                        echo "Valor da secret: ${secretValue.password}"
                     }
                 }
             }
