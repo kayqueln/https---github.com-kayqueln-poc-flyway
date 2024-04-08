@@ -1,5 +1,3 @@
-def secretvalue = ""
-
 pipeline {
     agent any
     
@@ -42,8 +40,9 @@ pipeline {
             steps {
                 withAWS(credentials: 'aws-credentials', region: 'us-east-1') {
                     script{
-                        secretvalue = sh(script: "/usr/local/bin/aws secretsmanager get-secret-value --secret-id ${SECRET_NAME} --query SecretString --output text", returnStdout: true).trim()
-                        echo "Valor da secret: ${secretvalue.password}"
+                        def secretvalue = sh(script: "/usr/local/bin/aws secretsmanager get-secret-value --secret-id ${SECRET_NAME} --query SecretString --output text", returnStdout: true).trim()
+                         def secretMap = readJSON text: secretvalue
+                        echo "Valor da secret: ${secretMap.password}"
                     }
                 }
             }
