@@ -43,7 +43,7 @@ pipeline {
                         def secretValue = sh(script: "/usr/local/bin/aws secretsmanager get-secret-value --secret-id ${SECRET_NAME} --query SecretString --output text", returnStdout: true)
                         def secretObject = readJSON(text: "${secretValue}")
                         
-                        echo "Objeto: ${secretObject}"
+                        echo "Senha: ${secretObject.password}"
             
                     }
                 }
