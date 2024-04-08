@@ -42,7 +42,7 @@ pipeline {
                     script{
                         def secretvalue = sh(script: "/usr/local/bin/aws secretsmanager get-secret-value --secret-id ${SECRET_NAME} --query SecretString --output json")
 
-                        def secretObject = readJSON(text: secretvalue)
+                        def secretObject = readJSON(text: "${secretValue}")
 
                         // Agora você pode acessar as propriedades do JSON como objetos Groovy
                         def password = secretObject.password
